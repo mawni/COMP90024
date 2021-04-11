@@ -81,7 +81,7 @@ for i in data2["rows"]:
 #
 print("Cell   #Total Tweets    #Overall Sentiment Score")
 for i in grid_arr:
-    print(i[0] + "       " + str(i[5]) + "                 " + str(i[6])) 
+    print(i[0] + "\t\t " + str(i[5]) + "\t\t\t\t\t" + str("{:+d}".format(i[6])))
 
 
 
