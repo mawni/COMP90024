@@ -1,7 +1,8 @@
 import json, ijson
 #from mpi4py import MPI
 
-############## I HAVEN"T HANDLED THE EDGE CASES################
+### Return the index of the grid of the tweet in grid_arr
+###
 def check_grid(coordinates, grid_arr):
     #grid_arr is [[id, xmin, xmax, ymin, ymax, totalTweets, totalScore],..,[]]
     #coordinates is [lat,long]
@@ -27,7 +28,6 @@ sentimentDict = {}
 for line in words_file:
     word,score = line.strip().split("\t")
     sentimentDict[word]=score
-#print(sentimentDict['lol'])
 ###
 
 
@@ -51,16 +51,29 @@ for i in data1["features"]:
 
 ### Tweets analysed tweet by tweet
 ###
-twt_json = open('smallTwitter.json', encoding='utf-8')
-data2 = json.load(twt_json) # make JSON object: key/value pairs
+big_data = open('smallTwitter.json', encoding='utf-8')
+big_data = big_data.readlines()[1:] #skip first line
 coordinates = [] # [long,lat]
 text = []
-for i in data2["rows"]:
-    coordinates = i["value"]["geometry"]["coordinates"]
-    text = i["doc"]["text"]
+ctr = 0
+emptyCtr = 0
+for line in big_data:
+    if len(line)<=3:
+        continue
+    elif line.endswith(',\n') or line.endswith(','):
+        line = line[:-2]
+    elif line.endswith('\n'):
+        line = line[:-1]
+    if ctr == len(big_data)-1:
+        line = line[:-2]
+    ctr+=1
+    data = json.loads(line)
+    # print(line)
+    # print(n)
+
+    coordinates = data["value"]["geometry"]["coordinates"]
+    text = data["doc"]["text"]
     score = 0
-    # print("\n")
-    # print(text)
     
     # note that text for tweets is stored twice. Other location is i["value"]["properties"]["text"]
     # the one I chose to parse is cleaner
@@ -83,10 +96,9 @@ for i in data2["rows"]:
     
     grid_arr[grid_index][5] += 1 # increment total tweets
     grid_arr[grid_index][6] += score # update grid totalScore
-  
     
 ### Final output
-#
+###
 print("Cell   #Total Tweets    #Overall Sentiment Score")
 for i in grid_arr:
     print(i[0] + "\t\t " + str(i[5]) + "\t\t\t\t\t" + str("{:+d}".format(i[6])))
