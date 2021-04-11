@@ -7,11 +7,18 @@ def check_grid(coordinates, grid_arr):
     #coordinates is [lat,long]
     for index, val in enumerate(grid_arr):
         if val[1] <= coordinates[0] and coordinates[0] <= val[2]:
-            # the latitude is within range
+            # the longitude is within range
             if val[3] <= coordinates[1] and coordinates[1] <= val[4]:
-                # the longitude is within range
+                # the latitude is within range
+                if coordinates[1]==val[3]: #equals ymin i.e. minimum latitude
+                    if val[0]!="C1" and val[0]!="C2" and ('D' in val[0])==False:
+                        continue
+                        #tweet latitude is at ymin of grid. 
+                        #Skip current loop so that it goes to the grid below where tweet lat = ymax
+                        #C1,C2,D3-5 have no cells, below, so don't skip current loop
                 return index 
                 # grid found
+                
                 
 ### Make dictionary of words and their scores from AFINN.txt
 ###
@@ -33,6 +40,7 @@ grid_arr = []
 for i in data1["features"]:
     grid_arr.append([i["properties"]["id"], i["properties"]["xmin"], i["properties"]["xmax"], i["properties"]["ymin"], i["properties"]["ymax"], 0, 0])
 # grid_arr is [[id, xmin, xmax, ymin, ymax, totalTweets, totalScore],..,[]]
+# note x is longitude, y is latitude
 
 # test print
 # for i in grid_arr:
@@ -43,9 +51,9 @@ for i in data1["features"]:
 
 ### Tweets analysed tweet by tweet
 ###
-twt_json = open('tinyTwitter.json', encoding='utf-8')
+twt_json = open('smallTwitter.json', encoding='utf-8')
 data2 = json.load(twt_json) # make JSON object: key/value pairs
-coordinates = [] # [lat,long]
+coordinates = [] # [long,lat]
 text = []
 for i in data2["rows"]:
     coordinates = i["value"]["geometry"]["coordinates"]
