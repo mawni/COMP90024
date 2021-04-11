@@ -1,4 +1,4 @@
-import json, ijson
+import json
 #from mpi4py import MPI
 
 ### Return the index of the grid of the tweet in grid_arr
@@ -56,7 +56,6 @@ big_data = big_data.readlines()[1:] #skip first line
 coordinates = [] # [long,lat]
 text = []
 ctr = 0
-emptyCtr = 0
 for line in big_data:
     if len(line)<=3:
         continue
