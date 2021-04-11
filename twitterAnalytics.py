@@ -52,9 +52,7 @@ for i in data2["rows"]:
     text = i["doc"]["text"]
     score = 0
     # print("\n")
-    # print(coordinates)
-    print("\n")
-    print(text)
+    # print(text)
     
     # note that text for tweets is stored twice. Other location is i["value"]["properties"]["text"]
     # the one I chose to parse is cleaner
@@ -75,13 +73,15 @@ for i in data2["rows"]:
         score += int(sentimentDict.get(word, 0))
         # if word key exists in dictionary, add score. If not, add 0 (i.e. no change)
     
-    grid_arr[grid_index][5] += 1 #increment total tweets
-    # update grid totalScore
-    grid_arr[grid_index][6] += score
+    grid_arr[grid_index][5] += 1 # increment total tweets
+    grid_arr[grid_index][6] += score # update grid totalScore
+  
     
-
-
-
+### Final output
+#
+print("Cell   #Total Tweets    #Overall Sentiment Score")
+for i in grid_arr:
+    print(i[0] + "       " + str(i[5]) + "                 " + str(i[6])) 
 
 
 
