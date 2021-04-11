@@ -19,7 +19,7 @@ words_file = open('AFINN.txt','r').readlines()
 sentimentDict = {}
 for line in words_file:
     word,score = line.strip().split("\t")
-    sentimentDict[word]=[score]
+    sentimentDict[word]=score
 #print(sentimentDict['lol'])
 ###
 
@@ -51,10 +51,11 @@ for i in data2["rows"]:
     coordinates = i["value"]["geometry"]["coordinates"]
     text = i["doc"]["text"]
     score = 0
-    # print(coordinates)
     # print("\n")
-    print(text)
+    # print(coordinates)
     print("\n")
+    print(text)
+    
     # note that text for tweets is stored twice. Other location is i["value"]["properties"]["text"]
     # the one I chose to parse is cleaner
     
@@ -63,14 +64,20 @@ for i in data2["rows"]:
     #print(grid_index)
     
     # check the words
-    x = text.split(" ")
-    # for j in x:
+    words = text.split(" ") #split words based on spaces
+    for word in words:
+        word = word.rstrip("!,?.'")
+        word = word.rstrip('"')
+        word = word.lower()
+        # remove special characters from the ends of each word. make lowercase
         
-    # rstrip("!,?.'")
-    # rstrip('"')
+        #print(word + " score = " + str(sentimentDict.get(word, 0)))            
+        score += int(sentimentDict.get(word, 0))
+        # if word key exists in dictionary, add score. If not, add 0 (i.e. no change)
     
     grid_arr[grid_index][5] += 1 #increment total tweets
     # update grid totalScore
+    grid_arr[grid_index][6] += score
     
 
 
