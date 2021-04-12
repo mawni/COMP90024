@@ -77,7 +77,13 @@ def giveRanges(length, x, size):
 
 
 # hard code number of lines in bigTwitter
-length = 4233609
+length = 4233611
+# big_data = open('bigTwitter.json', encoding='utf-8')
+# bigCtr = 0
+# for line in big_data:
+#     bigCtr+=1
+# print(bigCtr)
+# length=bigCtr
 
 ### wait for all nodes to reach this point
 comm.Barrier()
@@ -223,6 +229,6 @@ else:
         ###
         print("Cell   #Total Tweets    #Overall Sentiment Score")
         for i in grid_arr:
-            print(i[0] + "\t\t " + str(i[5]) + "\t\t\t\t" + str("{:+d}".format(i[6])))
+            print(i[0] + "\t" + str(i[5]) + "\t\t" + str("{:+d}".format(i[6])))
             
             
