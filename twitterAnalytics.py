@@ -78,6 +78,8 @@ def giveRanges(length, x, size):
 
 # hard code number of lines in bigTwitter
 length = 4233611
+
+#commented code below was used as a precalculation to determine the file's line length
 # big_data = open('bigTwitter.json', encoding='utf-8')
 # bigCtr = 0
 # for line in big_data:

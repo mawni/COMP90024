@@ -24,3 +24,4 @@ module load python/3.7.4
 
 # run program once
 time srun -n 8 python twitterAnalytics.py
+echo "Completed analytics for 2 nodes, 8 cores (4 cores per node)"
