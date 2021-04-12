@@ -1,5 +1,11 @@
 import json
-#from mpi4py import MPI
+from mpi4py import MPI
+
+comm = MPI.COMM_WORLD
+size = comm.Get_size() #amount of tasks
+rank = comm.Get_rank() #current task. Range (1, size-1)
+
+
 
 ### Return the index of the grid of the tweet in grid_arr
 ###
@@ -42,11 +48,17 @@ for i in data1["features"]:
 # grid_arr is [[id, xmin, xmax, ymin, ymax, totalTweets, totalScore],..,[]]
 # note x is longitude, y is latitude
 
-# test print
-# for i in grid_arr:
-#     print(i)
-#     print("\n")
-###
+
+### wait for all nodes to reach this point
+comm.Barrier()
+
+# Get
+if rank == 0 :
+    # master
+    # do stuff
+else:
+    # We slave
+    # do stuff
 
 
 ### Tweets analysed tweet by tweet
@@ -57,7 +69,7 @@ coordinates = [] # [long,lat]
 text = []
 ctr = 0
 for line in big_data:
-    if len(line)<=3:
+    if len(line)<=3: #this is in case the last line is just some brackets for example
         continue
     elif line.endswith(',\n') or line.endswith(','):
         line = line[:-2]
