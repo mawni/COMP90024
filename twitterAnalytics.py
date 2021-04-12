@@ -23,6 +23,7 @@ def check_grid(coordinates, grid_arr):
                         #C1,C2,D3-5 have no cells, below, so don't skip current loop
                 return index 
                 # grid found
+    return None
                 
                 
 ### Make dictionary of words and their scores from AFINN.txt
@@ -64,6 +65,8 @@ def giveRanges(length, x, size):
     readIndexL = math.floor(1 + x*step)
     readIndexR = math.floor(step*(x+1)+1)
     #note right index is excluded in the readlines iterator
+    if x==0: # if first rank
+        readIndexL=0
     if x==size-1: #if last rank
         readIndexR = length #because right index is not inclusive
     return (readIndexL, readIndexR) #return a tuple
@@ -72,10 +75,9 @@ def giveRanges(length, x, size):
     # print(" L = " + str(readIndexL))
     # print(" R = " + str(readIndexR))
 
-# open 1st time to get total length
-big_data = open('tinyTwitter.json', encoding='utf-8')
-big_data = big_data.readlines()
-length = len(big_data) #number of lines in entire dataset
+
+# hard code number of lines in bigTwitter
+length = 4233609
 
 ### wait for all nodes to reach this point
 comm.Barrier()
@@ -87,12 +89,14 @@ if size==1:
     
     ### Tweets analysed tweet by tweet. open file again for processing
     ###
-    big_data = open('smallTwitter.json', encoding='utf-8')
-    big_data = big_data.readlines()[1:] #skip first line
+    big_data = open('bigTwitter.json', encoding='utf-8')
     coordinates = [] # [long,lat]
     text = []
-    ctr = 1
+    ctr = 0
     for line in big_data:
+        if ctr==0:
+            ctr+=1
+            continue
         if len(line)<=3: #this is in case the last line is just some brackets for example
             continue
         elif line.endswith(',\n') or line.endswith(','):
@@ -116,6 +120,10 @@ if size==1:
         grid_index = check_grid(coordinates, grid_arr)
         #print(grid_index)
         
+        if grid_index==None:
+            #if tweet is not found in melb grid, ignore it
+            continue
+        
         # check the words
         words = text.split(" ") #split words based on spaces
         for word in words:
@@ -130,6 +138,12 @@ if size==1:
         
         grid_arr[grid_index][5] += 1 # increment total tweets
         grid_arr[grid_index][6] += score # update grid totalScore
+        
+    ### Final output
+    ###
+    print("Cell   #Total Tweets    #Overall Sentiment Score")
+    for i in grid_arr:
+        print(i[0] + "\t\t " + str(i[5]) + "\t\t\t\t\t" + str("{:+d}".format(i[6])))
 else:
     ###################################
     #MULTI-CORE. DO PARALLEL PROCESSING
@@ -140,17 +154,20 @@ else:
     readIndexL = rangeOutput[0]
     readIndexR = rangeOutput[1]
     
-    big_data = open('smallTwitter.json', encoding='utf-8')
-    big_data = big_data.readlines()[readIndexL:readIndexR]
+    big_data = open('bigTwitter.json', encoding='utf-8')
     #each core including master will do processing for equally divided number of tweets from json
     
     coordinates = [] # [long,lat]
     text = []
-    ctr = readIndexL
+    ctr = 0
     
     ### Tweets analysed tweet by tweet
     ###
     for line in big_data:
+        if ctr==0 or ctr<readIndexL or ctr>=readIndexR:
+            #skip any lines that are not readIndexL <= big_data lines < ReadIndexR
+            ctr+=1
+            continue
         if len(line)<=3: #this is in case the last line is just some brackets for example
             continue
         elif line.endswith(',\n') or line.endswith(','):
@@ -172,6 +189,10 @@ else:
         
         # check which grid
         grid_index = check_grid(coordinates, grid_arr)
+        
+        if grid_index==None:
+            #if tweet is not found in melb grid, ignore it
+            continue
             
         # check the words
         words = text.split(" ") #split words based on spaces
@@ -194,7 +215,7 @@ else:
     
     if rank == 0:
         # master                
-        for i in range(size):
+        for i in range(1,size):
             grid_arr = sumGrid(grid_arr, data[i])
             ###compile each rank's grid_arr and sum the total tweets and the scores  
         
@@ -202,6 +223,6 @@ else:
         ###
         print("Cell   #Total Tweets    #Overall Sentiment Score")
         for i in grid_arr:
-            print(i[0] + "\t\t " + str(i[5]) + "\t\t\t\t\t" + str("{:+d}".format(i[6])))
+            print(i[0] + "\t\t " + str(i[5]) + "\t\t\t\t" + str("{:+d}".format(i[6])))
             
             

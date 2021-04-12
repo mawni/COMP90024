@@ -18,6 +18,7 @@ def check_grid(coordinates, grid_arr):
                         #C1,C2,D3-5 have no cells, below, so don't skip current loop
                 return index 
                 # grid found
+    return None #grid not found
                 
                 
 ### Make dictionary of words and their scores from AFINN.txt
@@ -43,33 +44,40 @@ for i in data1["features"]:
 
 ### Tweets analysed tweet by tweet
 ###
-big_data = open('smallTwitter.json', encoding='utf-8') #open 1st to get total length
-big_data = big_data.readlines() #skip first line
+#big_data = open('tinyTwitter.json', encoding='utf-8') #open 1st to get total length
+#big_data = big_data.readlines() #skip first line
 
-length = len(big_data)
-print("total length = " + str(length))
+#length = len(big_data)
+length = 20
+#print("total length = " + str(length))
 
-big_data = open('smallTwitter.json', encoding='utf-8') #open 1st to get total length
-big_data = big_data.readlines()[1:] #skip first line
+big_data = open('tinyTwitter.json', encoding='utf-8') #open 1st to get total length
+#big_data = big_data.readlines()[1:] #skip first line
+
 coordinates = [] # [long,lat]
 text = []
 
-def printRanges(length, x):
-    step = length/8
-    readIndexL = math.floor(1 + x*step)
-    readIndexR = math.floor(step*(x+1)+1)
-    #note right index is excluded in the readlines iterator
-    if x==7: #if last rank
-        readIndexR = length #because right index is not inclusive
-    print("for rank " + str(x))
-    print(" L = " + str(readIndexL))
-    print(" R = " + str(readIndexR))
-for x in range(8):
-    printRanges(length,x)
+# def printRanges(length, x):
+#     step = length/8
+#     readIndexL = math.floor(1 + x*step)
+#     readIndexR = math.floor(step*(x+1)+1)
+#     #note right index is excluded in the readlines iterator
+#     if x==7: #if last rank
+#         readIndexR = length #because right index is not inclusive
+#     print("for rank " + str(x))
+#     print(" L = " + str(readIndexL))
+#     print(" R = " + str(readIndexR))
+# for x in range(8):
+#     printRanges(length,x)
     
-ctr = 1
+#ctr = 1
+ctr = 0
     
 for line in big_data:
+    print(ctr)
+    if ctr==0:
+        ctr+=1
+        continue
     if len(line)<=3: #this is in case the last line is just some brackets for example
         continue
     elif line.endswith(',\n') or line.endswith(','):
@@ -94,6 +102,10 @@ for line in big_data:
     # check which grid
     grid_index = check_grid(coordinates, grid_arr)
     #print(grid_index)
+    
+    if grid_index==None:
+            #if tweet is not found in melb grid, ignore it
+            continue
     
     # check the words
     words = text.split(" ") #split words based on spaces
