@@ -8,4 +8,4 @@ SLURM bash scripts used for job submission to the University of Melbourne's HPC.
 
 Note: *.slurm files were edited with Notepad++ in order to have Unix end-of-line characters. This is a requirement for SLURM scripts.
 
-Tech stack: git, python, MPI (with mpi4py), SLURM, JSON
+Tech stack: git, python, MPI (with mpi4py), SLURM, JSON, Spyder, Anaconda
