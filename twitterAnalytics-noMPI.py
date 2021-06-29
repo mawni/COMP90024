@@ -57,18 +57,18 @@ big_data = open('tinyTwitter.json', encoding='utf-8') #open 1st to get total len
 coordinates = [] # [long,lat]
 text = []
 
-# def printRanges(length, x):
-#     step = length/8
-#     readIndexL = math.floor(1 + x*step)
-#     readIndexR = math.floor(step*(x+1)+1)
-#     #note right index is excluded in the readlines iterator
-#     if x==7: #if last rank
-#         readIndexR = length #because right index is not inclusive
-#     print("for rank " + str(x))
-#     print(" L = " + str(readIndexL))
-#     print(" R = " + str(readIndexR))
-# for x in range(8):
-#     printRanges(length,x)
+def printRanges(length, x):
+    step = length/8
+    readIndexL = math.floor(1 + x*step)
+    readIndexR = math.floor(step*(x+1)+1)
+    #note right index is excluded in the readlines iterator
+    if x==7: #if last rank
+        readIndexR = length #because right index is not inclusive
+    print("for rank " + str(x))
+    print(" L = " + str(readIndexL))
+    print(" R = " + str(readIndexR))
+for x in range(8):
+    printRanges(length,x)
     
 #ctr = 1
 ctr = 0

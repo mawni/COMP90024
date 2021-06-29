@@ -175,6 +175,14 @@ else:
         if ctr==0 or ctr<readIndexL or ctr>=readIndexR:
             #skip any lines that are not readIndexL <= big_data lines < ReadIndexR
             ctr+=1
+
+            #TODO use (ctr % number of cores) to determine whether it should run. 
+            # e.g for 8 cores:
+            # core 0 runs if result of modulo is 0 (i.e. division with no remainder)
+            # core 1 runs if result of modulo is 1
+            # ...
+            # core 7 runs if result of modulo is 7
+
             continue
         if len(line)<=3: #this is in case the last line is just some brackets for example
             continue
